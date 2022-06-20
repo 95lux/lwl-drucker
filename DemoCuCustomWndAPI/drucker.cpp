@@ -1,10 +1,6 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
+#include "drucker.h"
 #include "conio.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <windows.h>
-#include <string.h>  
-#include <time.h>
 
 #include   "..\include\ccw_types.h"
 #include   "..\include\ccw_DeviceImpl.h"
@@ -86,6 +82,65 @@ OPENPRINTERCOMEX_FN				FnOpenPrinterCOMEx = NULL;
 BOOL							m_bDeviceOpen = FALSE;
 DWORD							m_dwDeviceID = 0;
 
+int			Result;
+HMODULE		cDll;
+wchar_t* DllName = L"CuCustomWndAPI.dll";
+CcwResult	ret;
+CcwLogVerbosity	logVerbosity = CCW_LOG_WARNING;			// Default value
+
+int initPrinter() {
+
+	// Load library	
+	cDll = LoadLibraryW(DllName);
+	if (cDll == NULL)
+	{
+		fprintf(stderr, "Error: Unable to load library '%S'\n", DllName);
+		fprintf(stderr, "Press any key to close\n");
+		getchar();
+
+		// Error!
+		return EXIT_FAILURE;
+	}
+	printf("Library %S successfully loaded.\n", DllName);
+
+	//Load functions
+	if ((Result = LoadProcs(cDll)) != 0)
+	{
+		fprintf(stderr, "Error: %d function(s) not found in dll '%S'\n", Result, DllName);
+		getchar();
+		return EXIT_FAILURE;
+	}
+
+	printf("Functions successfully loaded.\n");
+
+	// Initialize library
+	ret = FnInitLibrary(logVerbosity, NULL);
+	if (ret != CcwResult_OK)
+	{
+		// Initialization error. Exit
+		getchar();
+
+		FreeLibrary(cDll);
+
+		// Error!
+		return EXIT_FAILURE;
+	}
+
+	// Get library release
+	DoGetLibRel();
+
+	// Open COM Device with Index 1
+	DoOpenCOMPrinter();
+};
+
+void deInitPrinter() {
+	FnDeInitLibrary();
+
+	FreeLibrary(cDll);
+
+	printf("Library '%S' closed\n", DllName);
+}
+
 static int LoadProcs(HMODULE   Dll)
 {
 	int   Result = 0;
@@ -160,14 +215,9 @@ static int LoadProcs(HMODULE   Dll)
 	return Result;
 }
 
-
 void DoDeInitLibrary()
 {
-	// Now, de-init library
-	CcwResult Result = FnDeInitLibrary();
-
-	printf("DeInitalize: Result = %d (%ws)\n", Result, CcwResultToText(Result));
-
+	FnDeInitLibrary();
 	return;
 }
 
@@ -204,235 +254,6 @@ void DoCloseDevice()
 	}
 
 	printf("DeInitalize: Result = %d (%ws)\n", Result, CcwResultToText(Result));
-}
-
-int DoSelectUSBDevice(USBDeviceStruct* usbdevicesList, DWORD dwDeviceNum)
-{
-	char           Line[32] = { 0 };
-
-	printf("\nUSB Device list:(0 to exit)\n");
-	// For every connected device
-	for (DWORD dw = 0; dw < dwDeviceNum; dw++)
-	{
-		printf(" [Index: %d, VID: 0x%04X | PID: 0x%04X | SN: 0x%ws | Type: %d | Printer Name: <%ws>] \n",
-
-			(dw + 1),
-			usbdevicesList[dw].wVID,
-			usbdevicesList[dw].wPID,
-			usbdevicesList[dw].cSerialNumber,
-			usbdevicesList[dw].uIntType,
-			usbdevicesList[dw].cPrinterName
-
-		);
-
-	}
-
-	do
-	{
-		printf("\nEnter device INDEX: ");
-		if (fgets(Line, sizeof(Line), stdin) != NULL)
-		{
-			DWORD n = strtoul(Line, NULL, 0);
-			if (n == 0)
-			{
-				// Index not valid
-				printf("Index out of range.\n");
-				return -1;
-			}
-
-			if ((n < (dwDeviceNum + 1)))
-			{
-				printf("Selected device with index: %d\n", n);
-				return (n - 1);
-			}
-			else
-			{
-				// Index not valid
-				printf("Index out of range.\n");
-				return -1;
-			}
-
-		}
-	} while (1);
-
-	return -1;
-}
-
-void DoOpenUSBPrinter()
-{
-	CcwResult Result;
-	DWORD dwListElementsNumber;
-	USBDeviceStruct* pUSBDeviceStructArray;
-
-	//Extract the list of the USB Devices
-	Result = FnEnumUSBDevices(NULL, &dwListElementsNumber);
-	if (Result != CcwResult_OK)
-	{
-		//Error
-		printf("DoOpenUSBPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
-		return;
-	}
-
-	//If no USB Devices, exit
-	if (dwListElementsNumber == 0)
-	{
-		//Error
-		printf("DoOpenUSBPrinter: No USB devices found!\n");
-		return;
-	}
-
-	//Create the array and get again the enum
-	pUSBDeviceStructArray = new USBDeviceStruct[dwListElementsNumber];
-	Result = FnEnumUSBDevices(pUSBDeviceStructArray, &dwListElementsNumber);
-	if (Result != CcwResult_OK)
-	{
-		// Free memory
-		delete[] pUSBDeviceStructArray;
-
-		//Error
-		printf("DoOpenUSBPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
-		return;
-	}
-
-	// Show a list of devices an ask the user to select one 
-	int indexdevice = DoSelectUSBDevice(pUSBDeviceStructArray, dwListElementsNumber);
-	if (indexdevice < 0)
-	{
-		// Free memory
-		delete[] pUSBDeviceStructArray;
-
-		//Error
-		printf("DoOpenUSBPrinter: No device select\n");
-		return;
-	}
-
-	//Open device
-	Result = FnOpenPrinterUSBEx(&pUSBDeviceStructArray[indexdevice], &m_dwDeviceID);
-	// Free memory
-	delete[] pUSBDeviceStructArray;
-	if (Result != CcwResult_OK)
-	{
-		//Error
-		printf("DoOpenUSBPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
-		return;
-	}
-
-	m_bDeviceOpen = TRUE;
-
-	printf("DoOpenUSBPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
-}
-
-int DoSelectETHDevice(ETHDeviceStruct* ethdevicesList, DWORD dwDeviceNum)
-{
-	char           Line[32] = { 0 };
-
-	printf("\nETH Device list:(0 to exit)\n");
-	// For every connected device
-	for (DWORD dw = 0; dw < dwDeviceNum; dw++)
-	{
-		printf(" [Index: %d, NAME: %ws | IP: %ws] \n",
-
-			(dw + 1),
-			ethdevicesList[dw].cDeviceName,
-			ethdevicesList[dw].cIPAddress
-
-		);
-
-	}
-
-	do
-	{
-		printf("\nEnter device INDEX: ");
-		if (fgets(Line, sizeof(Line), stdin) != NULL)
-		{
-			DWORD n = strtoul(Line, NULL, 0);
-			if (n == 0)
-			{
-				// Index not valid
-				printf("Index out of range.\n");
-				return -1;
-			}
-
-			if ((n < (dwDeviceNum + 1)))
-			{
-				printf("Selected device with index: %d\n", n);
-				return (n - 1);
-			}
-			else
-			{
-				// Index not valid
-				printf("Index out of range.\n");
-				return -1;
-			}
-
-		}
-	} while (1);
-
-	return -1;
-}
-
-void DoOpenETHPrinter()
-{
-	CcwResult Result;
-	DWORD dwListElementsNumber;
-	ETHDeviceStruct* pETHDeviceStructArray;
-
-	//Extract the list of the ETH Devices
-	Result = FnEnumETHDevices(NULL, &dwListElementsNumber, 500);
-	if (Result != CcwResult_OK)
-	{
-		//Error
-		printf("DoOpenETHPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
-		return;
-	}
-
-	//If no ETH Devices, exit
-	if (dwListElementsNumber == 0)
-	{
-		//Error
-		printf("DoOpenETHPrinter: No ETH devices found!\n");
-		return;
-	}
-
-	//Create the array and get again the enum
-	pETHDeviceStructArray = new ETHDeviceStruct[dwListElementsNumber];
-	Result = FnEnumETHDevices(pETHDeviceStructArray, &dwListElementsNumber, 500);
-	if (Result != CcwResult_OK)
-	{
-		// Free memory
-		delete[] pETHDeviceStructArray;
-
-		//Error
-		printf("DoOpenETHPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
-		return;
-	}
-
-	// Show a list of devices an ask the user to select one 
-	int indexdevice = DoSelectETHDevice(pETHDeviceStructArray, dwListElementsNumber);
-	if (indexdevice < 0)
-	{
-		// Free memory
-		delete[] pETHDeviceStructArray;
-
-		//Error
-		printf("DoOpenETHPrinter: No device select\n");
-		return;
-	}
-
-	//Open device
-	Result = FnOpenPrinterETHEx(&pETHDeviceStructArray[indexdevice], &m_dwDeviceID);
-	// Free memory
-	delete[] pETHDeviceStructArray;
-	if (Result != CcwResult_OK)
-	{
-		//Error
-		printf("DoOpenETHPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
-		return;
-	}
-
-	m_bDeviceOpen = TRUE;
-
-	printf("DoOpenETHPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 }
 
 int DoSelectCOMDevice(COMPortStruct* comportsList, DWORD dwDeviceNum)
@@ -507,131 +328,7 @@ void DoOpenCOMPrinter()
 	printf("DoOpenCOMPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 }
 
-int DoSelectPrinter(PrinterStruct* printersList, DWORD dwPrintersNum)
-{
-	char           Line[32] = { 0 };
-
-	printf("\nPrinters list:\n");
-	// For every printer
-	for (DWORD dw = 0; dw < dwPrintersNum; dw++)
-	{
-		printf(" [Index: %d, Printer Name: <%ws> Online:%d Default:%d] \n",
-
-			(dw + 1),
-
-			printersList[dw].cPrinterName,
-			printersList[dw].bPrinterOnline,
-			printersList[dw].bDefaultPrinter
-
-		);
-
-	}
-
-	do
-	{
-		printf("\nEnter printer INDEX: ");
-		if (fgets(Line, sizeof(Line), stdin) != NULL)
-		{
-			DWORD n = strtoul(Line, NULL, 0);
-			if (n == 0)
-			{
-				// Index not valid
-				printf("Index out of range.\n");
-				return -1;
-			}
-
-			if ((n < (dwPrintersNum + 1)))
-			{
-				printf("Selected printer with index: %d\n", n);
-				return (n - 1);
-			}
-			else
-			{
-				// Index not valid
-				printf("Index out of range.\n");
-				return -1;
-			}
-
-		}
-	} while (1);
-
-	return -1;
-}
-
-void DoOpenPrinter()
-{
-	CcwResult Result;
-	DWORD dwListElementsNumber;
-	PrinterStruct* pPrinterStructArray;
-
-	//Extract the list of the Printers
-	Result = FnEnumInstalledPrinters(NULL, &dwListElementsNumber);
-	if (Result != CcwResult_OK)
-	{
-		//Error
-		printf("DoOpenPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
-		return;
-	}
-
-	//If no Printers, exit
-	if (dwListElementsNumber == 0)
-	{
-		//Error
-		printf("DoOpenPrinter: No printers found!\n");
-		return;
-	}
-
-	//Create the array and get again the enum
-	pPrinterStructArray = new PrinterStruct[dwListElementsNumber];
-	Result = FnEnumInstalledPrinters(pPrinterStructArray, &dwListElementsNumber);
-	if (Result != CcwResult_OK)
-	{
-		// Free memory
-		delete[] pPrinterStructArray;
-
-		//Error
-		printf("DoOpenPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
-		return;
-	}
-
-	// Show a list of devices an ask the user to select one 
-	int indexdevice = DoSelectPrinter(pPrinterStructArray, dwListElementsNumber);
-	if (indexdevice < 0)
-	{
-		// Free memory
-		delete[] pPrinterStructArray;
-
-		//Error
-		printf("DoOpenPrinter: No printer select\n");
-		return;
-	}
-
-	//Open device
-	Result = FnOpenInstalledPrinter(pPrinterStructArray[indexdevice].cPrinterName, &m_dwDeviceID);
-	// Free memory
-	delete[] pPrinterStructArray;
-	if (Result != CcwResult_OK)
-	{
-		//Error
-		printf("DoOpenPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
-		return;
-	}
-
-	//Print some device info: Printer model
-	wchar_t devModel[MAXCHARBUFFER] = { 0 };
-	Result = FnGetInfoDeviceModel(m_dwDeviceID, devModel);
-	printf("Printer Model: (%ws)\n", devModel);
-	//Print some device info: Firmware version
-	wchar_t devFWVersion[MAXCHARBUFFER] = { 0 };
-	Result = FnGetInfoFirmwareVersion(m_dwDeviceID, devFWVersion);
-	printf("Firmware Version: (%ws)\n", devFWVersion);
-
-	m_bDeviceOpen = TRUE;
-
-	printf("DoOpenPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
-}
-
-void DoPrintLine(wchar_t *Line)
+void DoPrintLine(wchar_t *Line, PrintFontStruct pfs)
 {
 	// wchar_t   Line[MAXCHARBUFFER] = { 0 };
 	// wchar_t   Line[MAXCHARBUFFER] = "Test";
@@ -643,14 +340,6 @@ void DoPrintLine(wchar_t *Line)
 		printf("Close: Error - no device selected\n");
 		return;
 	}
-
-	//Create a sample font attributes / properties
-	PrintFontStruct pfs = PRINTFONTSTRUCT_INIT;
-	pfs.charWidth = FONT_SIZE_X1;
-	pfs.charHeight = FONT_SIZE_X2;
-	pfs.justification = FONT_JUSTIFICATION_CENTER;
-	pfs.emphasized = TRUE;
-
 	//Print Text
 	Result = FnPrintTextEx(m_dwDeviceID, Line, &pfs, TRUE);
 	if (Result != CcwResult_OK)
@@ -826,70 +515,4 @@ void DoGetStatus()
 	printf("DoGetStatus: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 }
 
-int _tmain(int argc, _TCHAR* argv[])
-{
 
-	char* linebuffer[32];
-
-	int			Result;
-	HMODULE		cDll;
-	wchar_t* DllName = L"CuCustomWndAPI.dll";
-	CcwResult	ret;
-	CcwLogVerbosity	logVerbosity = CCW_LOG_WARNING;			// Deafult value
-
-	// Load library	
-	cDll = LoadLibraryW(DllName);
-	if (cDll == NULL)
-	{
-		fprintf(stderr, "Error: Unable to load library '%S'\n", DllName);
-		fprintf(stderr, "Press any key to close\n");
-		getchar();
-
-		// Error!
-		return EXIT_FAILURE;
-	}
-
-	printf("Library %S successfully loaded.\n", DllName);
-
-	//Load functions
-	if ((Result = LoadProcs(cDll)) != 0)
-	{
-		fprintf(stderr, "Error: %d function(s) not found in dll '%S'\n", Result, DllName);
-		getchar();
-		return EXIT_FAILURE;
-	}
-
-	printf("Functions successfully loaded.\n");
-
-	// Initialize library
-	ret = FnInitLibrary(logVerbosity, NULL);
-	if (ret != CcwResult_OK)
-	{
-		// Initialization error. Exit
-		getchar();
-
-		FreeLibrary(cDll);
-
-		// Error!
-		return EXIT_FAILURE;
-	}
-
-	// Get library release
-	DoGetLibRel();
-
-	// Open COM Device with Index 1
-	DoOpenCOMPrinter();
-
-	while (true)
-	{
-		DoPrintLine(L"test");
-	}
-
-	// DeInit library
-	DoDeInitLibrary();
-
-	FreeLibrary(cDll);
-
-	printf("Library '%S' closed\n", DllName);
-	return EXIT_SUCCESS;
-}

@@ -1,4 +1,3 @@
-﻿  drucker.cpp
-c:\users\235media\desktop\customdrucker\cucustomwndapi pack 1.03\examples\c++ library\source code\democucustomwndapi\drucker.cpp(832): warning C4101: 'linebuffer': unreferenced local variable
-  DemoCuCustomWndAPI.vcxproj -> C:\Users\235media\Desktop\Customdrucker\CuCustomWndAPI Pack 1.03\Examples\C++ Library\Source code\DemoCuCustomWndAPI\x64\Debug\DemoCuCustomWndAPI.exe
-  DemoCuCustomWndAPI.vcxproj -> C:\Users\235media\Desktop\Customdrucker\CuCustomWndAPI Pack 1.03\Examples\C++ Library\Source code\DemoCuCustomWndAPI\x64\Debug\DemoCuCustomWndAPI.pdb (Full PDB)
+﻿  answers.cpp
+  DemoCuCustomWndAPI.vcxproj -> C:\Users\235media\Desktop\Customdrucker\CuCustomWndAPI Pack 1.03\Examples\C++ Library\Source code\DemoCuCustomWndAPI\x64\Debug\lwl-drucker.exe
+  DemoCuCustomWndAPI.vcxproj -> C:\Users\235media\Desktop\Customdrucker\CuCustomWndAPI Pack 1.03\Examples\C++ Library\Source code\DemoCuCustomWndAPI\x64\Debug\lwl-drucker.pdb (Full PDB)
