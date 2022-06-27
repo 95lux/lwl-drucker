@@ -5,12 +5,33 @@
 #include <windows.h>
 #include <string.h>  
 #include <time.h>
+#include <iostream>
 
+#include "answers.h"
 #include "drucker.h"
 #include "filehandle.h"
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	int answers_mask[8][4] =
+	{
+		{1,2,3,4},
+		{4,3,2,1},
+		{1,1,2,2},
+		{2,2,1,1},
+		{4,2,3,1},
+		{2,2,2,1},
+		{1,2,3,2},
+		{4,4,1,1}
+	};
+
+	int answers_array[] = { 1,2,3,4,1,2,3,4 };
+	answers *answersUser1 = new answers(18, 52835, answers_array, answers_mask);
+	char* s1 = answersUser1->get_bar(0);
+ 	std::cout << s1 << std::endl;
+	std::cout << answersUser1->get_bar(1) << std::endl;
+	std::cout << answersUser1->get_bar(2) << std::endl;
+	std::cout << answersUser1->get_bar(3) << std::endl;
 
 	char* linebuffer[32];
 
