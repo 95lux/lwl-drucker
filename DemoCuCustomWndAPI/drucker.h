@@ -33,7 +33,7 @@ void DoPrintLine(wchar_t* Line, PrintFontStruct pfs);
 
 void DoPrintBarcode();
 
-void DoPrintImage();
+void DoPrintImage(wchar_t *);
 
 void DoCut();
 

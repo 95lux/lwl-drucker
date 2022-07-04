@@ -330,8 +330,6 @@ void DoOpenCOMPrinter()
 
 void DoPrintLine(wchar_t *Line, PrintFontStruct pfs)
 {
-	// wchar_t   Line[MAXCHARBUFFER] = { 0 };
-	// wchar_t   Line[MAXCHARBUFFER] = "Test";
 	CcwResult Result;
 
 	//Function available ONLY if a device is open
@@ -354,7 +352,7 @@ void DoPrintLine(wchar_t *Line, PrintFontStruct pfs)
 
 void DoPrintBarcode()
 {
-	wchar_t   Line[MAXCHARBUFFER] = { 0 };
+	wchar_t   Line[MAXCHARBUFFER] = L"https://power2change-energiewende.de";
 	CcwResult Result;
 
 	//Function available ONLY if a device is open
@@ -363,21 +361,6 @@ void DoPrintBarcode()
 		printf("Close: Error - no device selected\n");
 		return;
 	}
-
-	//Ask the text
-	do
-	{
-		printf("\nEnter the text to print into barcode: ");
-		if (fgetws(Line, sizeof(Line), stdin) != NULL)
-		{
-			if (wcslen(Line) > 1)
-				break;
-		}
-	} while (1);
-
-	//Remove the LF at the end of the string
-	Line[wcslen(Line) - 1] = 0x00;
-	printf("Printing <%ws> barcode...\n", Line);
 
 	//Create a sample attributes / properties
 	PrintBarcodeStruct pfb = PRINTBARCODESTRUCT_INIT;
@@ -398,9 +381,11 @@ void DoPrintBarcode()
 	printf("DoPrintBarcode: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 }
 
-void DoPrintImage()
+void DoPrintImage(wchar_t *path)
 {
-	wchar_t   Line[MAXCHARBUFFER] = { 0 };
+	// wchar_t   Line[MAXCHARBUFFER] = ;
+	wchar_t* Line = (wchar_t*)malloc(sizeof(char)*MAXCHARBUFFER);
+	Line = path;
 	CcwResult Result;
 
 	//Function available ONLY if a device is open
@@ -410,20 +395,7 @@ void DoPrintImage()
 		return;
 	}
 
-	//Ask the text
-	do
-	{
-		printf("\nEnter the path of the image to print: ");
-		if (fgetws(Line, sizeof(Line), stdin) != NULL)
-		{
-			if (wcslen(Line) > 1)
-				break;
-		}
-	} while (1);
-
 	printf("Printing <%ws>...\n", Line);
-	//Remove the LF at the end of the string
-	Line[wcslen(Line) - 1] = 0x00;
 
 	//Create a sample image attributes / properties
 	PrintImageStruct pis = PRINTIMAGESTRUCT_INIT;

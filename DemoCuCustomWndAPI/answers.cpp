@@ -93,6 +93,6 @@ void answers::print_question(int num, PrintFontStruct pfs) {
 	swprintf(buf_int, sizeof buf_int, L"%d", percent_typ[num]);
 	wcscpy(buf_str, L"%  ");
 	wcscat(buf_int, buf_str);
-	wcscat(buf_int, get_bar(1));
+	wcscat(buf_int, get_bar(num));
 	DoPrintLine(buf_int, pfs);
 }
