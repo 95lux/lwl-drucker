@@ -1,6 +1,0 @@
-﻿  answers.cpp
-c:\users\235media\desktop\customdrucker\cucustomwndapi pack 1.03\examples\c++ library\source code\democucustomwndapi\answers.cpp(81): warning C4172: returning address of local variable or temporary: ret
-  main.cpp
-c:\users\235media\desktop\customdrucker\cucustomwndapi pack 1.03\examples\c++ library\source code\democucustomwndapi\main.cpp(36): warning C4101: 'linebuffer': unreferenced local variable
-  DemoCuCustomWndAPI.vcxproj -> C:\Users\235media\Desktop\Customdrucker\CuCustomWndAPI Pack 1.03\Examples\C++ Library\Source code\DemoCuCustomWndAPI\x64\Debug\lwl-drucker.exe
-  DemoCuCustomWndAPI.vcxproj -> C:\Users\235media\Desktop\Customdrucker\CuCustomWndAPI Pack 1.03\Examples\C++ Library\Source code\DemoCuCustomWndAPI\x64\Debug\lwl-drucker.pdb (Full PDB)

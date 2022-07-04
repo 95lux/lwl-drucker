@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
-#include <string.h>  
+#include <string>  
 #include <time.h>
 #include <iostream>
 
@@ -11,29 +11,34 @@
 #include "drucker.h"
 #include "filehandle.h"
 
+#define _CRT_SECURE_NO_WARNINGS 1
+#pragma warning(disable:4996)
+
+
 int _tmain(int argc, _TCHAR* argv[])
 {
-	int answers_mask[8][4] =
+	// 1. Ja, aber woanders.
+	// 2. Naja, mir egal.
+	// 3. Ja, weniger ist mehr
+	// 4. Jam aber Veränderung nein.
+	int answers_mask[9][4] =
 	{
+		{3,4,1,2},
+		{3,2,4,1},
+		{3,4,1,2},
+		{3,2,4,3},
+		{4,1,2,3},
+		{3,1,3,4},
 		{1,2,3,4},
-		{4,3,2,1},
-		{1,1,2,2},
-		{2,2,1,1},
-		{4,2,3,1},
-		{2,2,2,1},
-		{1,2,3,2},
-		{4,4,1,1}
+		{2,4,1,3}
 	};
 
-	int answers_array[] = { 1,2,3,4,1,2,3,4 };
+	int answers_array[] = { 2,2,3,4,1,2,3,4,3 };
 	answers *answersUser1 = new answers(18, 52835, answers_array, answers_mask);
-	char* s1 = answersUser1->get_bar(0);
- 	std::cout << s1 << std::endl;
-	std::cout << answersUser1->get_bar(1) << std::endl;
-	std::cout << answersUser1->get_bar(2) << std::endl;
-	std::cout << answersUser1->get_bar(3) << std::endl;
 
 	char* linebuffer[32];
+
+	initPrinter();
 
 	PrintFontStruct pfs = PRINTFONTSTRUCT_INIT;
 	pfs.charWidth = FONT_SIZE_X1;
@@ -43,40 +48,68 @@ int _tmain(int argc, _TCHAR* argv[])
 	pfs.emphasized = TRUE;
 	pfs.italic = FALSE;
 	pfs.leftMarginValue = 50;
-
-	/*
 	
-	//DoPrintLine(L"test");
-	DoPrintLine(L"Alter: 1", pfs);
-	DoPrintLine(L"PLZ:   50825", pfs);
+	wchar_t buf_int[30];
+	wchar_t buf_str[30];
+/*
+
+	// Alter
+	swprintf(buf_int, sizeof buf_int, L"%d", answersUser1->alter);
+	wcscpy(buf_str, L"Alter: ");
+	DoPrintLine(wcscat(buf_str, buf_int), pfs);
+
+	// PLZ
+	swprintf(buf_int, sizeof buf_int, L"%d", answersUser1->plz);
+	wcscpy(buf_str, L"PLZ:   ");
+	DoPrintLine(wcscat(buf_str, buf_int), pfs);
+	
+*/
+	// Typ 1
 	pfs.bLineSpacing = 60;
 	DoPrintLine(L"Ja, aber woanders.", pfs);
 	pfs.bLineSpacing = 100;
-	DoPrintLine(L"100%   ████████████████████", pfs);
+	
+	swprintf(buf_int, sizeof buf_int, L"%d", answersUser1->percent_typ[0]);
+	wcscpy(buf_str, L"%  ");
+	wcscat(buf_int, buf_str);
+	wcscat(buf_int, answersUser1->get_bar(0));
+	DoPrintLine(buf_int, pfs);
+
+	// Typ 2
 	pfs.bLineSpacing = 60;
 	DoPrintLine(L"Naja, mir egal.", pfs);
 	pfs.bLineSpacing = 100;
 	DoPrintLine(L"75%    ███████████████", pfs);
+	
+	// Typ 3
 	pfs.bLineSpacing = 60;
 	DoPrintLine(L"Ja, weniger ist mehr.", pfs);
 	pfs.bLineSpacing = 100;
 	DoPrintLine(L"12%    ██▌", pfs);
+
+	// Typ 4
 	pfs.bLineSpacing = 60;
 	DoPrintLine(L"Ja, aber Veränderung nein.", pfs);
 	pfs.bLineSpacing = 100;
-	DoPrintLine(L"45%    █████████", pfs);
-	
-	DoCut();
-	*/
-	openFile();
+	DoPrintLine(L"12%    ██▌", pfs);
 
+
+	DoPrintLine(L"", pfs);
+	DoPrintLine(L"Im Film erfährst du mehr.", pfs);
+	DoPrintLine(L"Welcher Weg entspricht dir?", pfs);
+	DoPrintLine(L"Entscheide dich!", pfs);
+
+	DoPrintBarcode();
+
+	DoCut();
+	// openFile();
 	while (true)
 	{
 
 	}
 	
+
 	// DeInit library
-	
 	deInitPrinter();
 
 	return EXIT_SUCCESS;
