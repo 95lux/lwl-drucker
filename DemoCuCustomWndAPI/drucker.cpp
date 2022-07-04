@@ -299,9 +299,14 @@ void DoOpenCOMPrinter()
 		printf("DoOpenCOMPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 		return;
 	}
-
+	int indexdevice = 0;
 	// Show a list of devices an ask the user to select one 
-	int indexdevice = 1;
+	for (int i = 0; i < dwListElementsNumber; i++) {
+		wchar_t* str = pCOMPortStructArray[i].cCOMPort;
+		if (wcscmp(str, L"COM3") == 0) {
+			indexdevice = i;
+		}
+	}
 	if (indexdevice < 0)
 	{
 		// Free memory
