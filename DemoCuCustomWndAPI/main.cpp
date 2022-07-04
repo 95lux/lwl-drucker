@@ -65,35 +65,33 @@ int _tmain(int argc, _TCHAR* argv[])
 	
 */
 	// Typ 1
-	pfs.bLineSpacing = 60;
+	pfs.bLineSpacing = 50;
 	DoPrintLine(L"Ja, aber woanders.", pfs);
-	pfs.bLineSpacing = 100;
-	
-	swprintf(buf_int, sizeof buf_int, L"%d", answersUser1->percent_typ[0]);
-	wcscpy(buf_str, L"%  ");
-	wcscat(buf_int, buf_str);
-	wcscat(buf_int, answersUser1->get_bar(0));
-	DoPrintLine(buf_int, pfs);
+	pfs.bLineSpacing = 60;
+	answersUser1->print_question(0, pfs);
 
 	// Typ 2
-	pfs.bLineSpacing = 60;
+	pfs.bLineSpacing = 50;
 	DoPrintLine(L"Naja, mir egal.", pfs);
-	pfs.bLineSpacing = 100;
-	DoPrintLine(L"75%    ███████████████", pfs);
+	pfs.bLineSpacing = 60;
+
+	answersUser1->print_question(1, pfs);
 	
 	// Typ 3
-	pfs.bLineSpacing = 60;
+	pfs.bLineSpacing = 50;
 	DoPrintLine(L"Ja, weniger ist mehr.", pfs);
-	pfs.bLineSpacing = 100;
-	DoPrintLine(L"12%    ██▌", pfs);
+	pfs.bLineSpacing = 60;
+
+	answersUser1->print_question(2, pfs);
 
 	// Typ 4
-	pfs.bLineSpacing = 60;
+	pfs.bLineSpacing = 50;
 	DoPrintLine(L"Ja, aber Veränderung nein.", pfs);
-	pfs.bLineSpacing = 100;
-	DoPrintLine(L"12%    ██▌", pfs);
+	pfs.bLineSpacing = 60;
 
+	answersUser1->print_question(3, pfs);
 
+	pfs.bLineSpacing = 50;
 	DoPrintLine(L"", pfs);
 	DoPrintLine(L"Im Film erfährst du mehr.", pfs);
 	DoPrintLine(L"Welcher Weg entspricht dir?", pfs);

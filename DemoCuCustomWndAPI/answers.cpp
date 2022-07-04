@@ -2,6 +2,7 @@
 #include "answers.h"
 #include <cmath>
 #include <ctgmath>
+#include "drucker.h"
 
 #define _CRT_SECURE_NO_WARNINGS 1
 #pragma warning(disable:4996)
@@ -65,7 +66,7 @@ void answers::calcPercentage() {
 
 // return a bar as string of unicode chars
 wchar_t* answers::get_bar(int typ) {
-	char ret[20] = "";
+	wchar_t ret[20] = L"";
 	double qnt_chars = percent_typ[typ] / 100.0 * 20;
 	int for_loop_cap = (int)round(qnt_chars + 0.5);
 	for (int i = 0; i < for_loop_cap; i++) {
@@ -73,15 +74,25 @@ wchar_t* answers::get_bar(int typ) {
 			// append half bar if needed
 			if (round(qnt_chars) - qnt_chars > 0) {
 				// strcat(ret, "▌");
-				strcat(ret, "▌");
+				wcscat(ret, L"▌");
 			}
 		}
 		else { // all loops instead of last one
-			strcat(ret, "█");
+			wcscat(ret, L"█");
 			// strcat(ret, "█");
 		}
 	}
-	wchar_t* real_ret = (wchar_t*)malloc(sizeof(char) * 20);;
-	wcscpy(real_ret, (wchar_t*)ret);
-	return real_ret;
+	// wchar_t* real_ret = (wchar_t*)malloc(sizeof(char) * 20);;
+	// wcscpy(real_ret, ret);
+	return ret;
+}
+
+void answers::print_question(int num, PrintFontStruct pfs) {
+	wchar_t buf_int[30];
+	wchar_t buf_str[30];
+	swprintf(buf_int, sizeof buf_int, L"%d", percent_typ[num]);
+	wcscpy(buf_str, L"%  ");
+	wcscat(buf_int, buf_str);
+	wcscat(buf_int, get_bar(1));
+	DoPrintLine(buf_int, pfs);
 }

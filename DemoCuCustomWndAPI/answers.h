@@ -1,6 +1,8 @@
 #pragma once
 #define ANZ_FRAGEN 9
 
+#include "drucker.h"
+
 class answers {
 
 public:
@@ -20,6 +22,8 @@ public:
 	
 	void calcPercentage();
 
-	wchar_t* get_bar(int typ);
+	wchar_t* get_bar(int);
+
+	void print_question(int , PrintFontStruct);
 };
 
