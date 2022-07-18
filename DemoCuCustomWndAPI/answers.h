@@ -2,6 +2,7 @@
 #define ANZ_FRAGEN 9
 
 #include "drucker.h"
+#include <string>
 
 class answers {
 
@@ -10,6 +11,8 @@ public:
 	unsigned short plz;
 	unsigned short answers_arr[ANZ_FRAGEN];
 
+	char line[64];
+
 	int percent_typ[4] = {0,0,0,0};
 
 	// enthält die Maske für die Typzuweisung pro Frage
@@ -17,8 +20,9 @@ public:
 	// Falls mehrere Typzuweisungen pro Frage gewählt werden sollen, gibt es ein dreidimensionales Array
 	int answers_mask[ANZ_FRAGEN][4];
 	
-	// constructor
+	// constructors
 	answers(int , int , int [], int [ANZ_FRAGEN][4]);
+	answers();
 	
 	void calcPercentage();
 

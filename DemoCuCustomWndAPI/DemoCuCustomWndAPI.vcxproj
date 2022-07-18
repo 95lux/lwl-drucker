@@ -146,6 +146,9 @@
     <ClInclude Include="answers.h" />
     <ClInclude Include="drucker.h" />
     <ClInclude Include="filehandle.h" />
+    <ClInclude Include="json-forwards.h" />
+    <ClInclude Include="json.h" />
+    <ClInclude Include="serial.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -157,9 +160,11 @@
     </ClCompile>
     <ClCompile Include="drucker.cpp" />
     <ClCompile Include="filehandle.cpp" />
+    <ClCompile Include="jsoncpp.cpp" />
     <ClCompile Include="main.cpp">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions) </PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="serial.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

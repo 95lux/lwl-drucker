@@ -7,15 +7,27 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 #pragma warning(disable:4996)
 
-
+answers::answers(){};
 
 answers::answers(int alter, int plz, int answers_arr[], int answers_mask[9][4]) : alter(alter), plz(plz) {
+	char buf[32] = "";
+	sprintf(buf, "%d", alter);
+	strcpy(line, buf);
+	strcat(line, ",");
+
+	sprintf(buf, "%d", plz);
+	strcat(line, buf);
 	for (int i = 0; i < ANZ_FRAGEN; i++) {
 		this->answers_arr[i] = answers_arr[i];
+		strcat(line, ",");
+		sprintf(buf, "%d", answers_arr[i]);
+		strcat(line, buf);
+
 		for (int j = 0; j < 4; j++) {
 			this->answers_mask[i][j] = answers_mask[i][j];
 		}
 	}
+
 	calcPercentage();
 }
 
