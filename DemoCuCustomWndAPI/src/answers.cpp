@@ -1,8 +1,8 @@
 ﻿#include "stdafx.h"
-#include "answers.h"
+#include "../include/answers.h"
 #include <cmath>
 #include <ctgmath>
-#include "drucker.h"
+#include "../include/drucker.h"
 
 #define _CRT_SECURE_NO_WARNINGS 1
 #pragma warning(disable:4996)

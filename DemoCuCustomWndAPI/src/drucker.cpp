@@ -1,9 +1,9 @@
 ﻿#include "stdafx.h"
-#include "drucker.h"
+#include "../include/drucker.h"
 #include "conio.h"
 
-#include   "..\include\ccw_types.h"
-#include   "..\include\ccw_DeviceImpl.h"
+#include   "../include/ccw_types.h"
+#include   "../include/ccw_DeviceImpl.h"
 
 #define   LoadAndCheck(Func, Type, Handle, Name, Result)                                          \
 	if ((Func = (Type) GetProcAddress (Handle, Name)) == NULL)          \

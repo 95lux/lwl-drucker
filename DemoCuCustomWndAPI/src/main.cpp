@@ -8,11 +8,11 @@
 #include <iostream>
 #include <fstream>
 
-#include "answers.h"
-#include "drucker.h"
-#include "filehandle.h"
-#include "serial.h"
-#include "SimpleIni.h"
+#include "../include/answers.h"
+#include "../include/drucker.h"
+#include "../include/filehandle.h"
+#include "../include/serial.h"
+#include "../include/SimpleIni.h"
 
 #pragma warning(disable : 4996) //_CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS 1

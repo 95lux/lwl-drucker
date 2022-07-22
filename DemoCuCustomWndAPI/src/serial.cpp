@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "serial.h"
-#include "json.h"
-#include "answers.h"
+#include "../include/serial.h"
+#include "../include/json.h"
+#include "../include/answers.h"
 
 #include <algorithm>
 
