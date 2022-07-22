@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DemoCuCustomWndAPI", "DemoCuCustomWndAPI.vcxproj", "{1FC73A5B-6FD3-416A-A49F-A32F60FA3BC8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lwl-drucker", "lwl-drucker.vcxproj", "{1FC73A5B-6FD3-416A-A49F-A32F60FA3BC8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

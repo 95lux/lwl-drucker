@@ -5,11 +5,11 @@
 #include   "../include/ccw_types.h"
 #include   "../include/ccw_DeviceImpl.h"
 
-#define   LoadAndCheck(Func, Type, Handle, Name, Result)                                          \
-	if ((Func = (Type) GetProcAddress (Handle, Name)) == NULL)          \
-							  {                                                                   \
-							  Result++;                                                       \
-							  fprintf (stderr, "Entry point '%s' not found in DLL\n", Name);  \
+#define   LoadAndCheck(Func, Type, Handle, Name, Result)											\
+	if ((Func = (Type) GetProcAddress (Handle, Name)) == NULL)										\
+							  {																		\
+							  Result++;																\
+							  fprintf (stderr, "Entry point '%s' not found in DLL\n", Name);		\
 							  }
 
 INITLIBRARY_FN					FnInitLibrary = NULL;
@@ -88,7 +88,7 @@ wchar_t* DllName = L"CuCustomWndAPI.dll";
 CcwResult	ret;
 CcwLogVerbosity	logVerbosity = CCW_LOG_WARNING;			// Default value
 
-int initPrinter(char* printer_com) {
+int initPrinter(const wchar_t* printer_com) {
 
 	// Load library	
 	cDll = LoadLibraryW(DllName);
@@ -264,7 +264,7 @@ int DoSelectCOMDevice(COMPortStruct* comportsList, DWORD dwDeviceNum)
 	return n;
 }
 
-void DoOpenCOMPrinter(char* printer_com)
+void DoOpenCOMPrinter(const wchar_t* printer_com)
 {
 	CcwResult Result;
 	DWORD dwListElementsNumber;
@@ -303,7 +303,7 @@ void DoOpenCOMPrinter(char* printer_com)
 	// Show a list of devices an ask the user to select one 
 	for (int i = 0; i < dwListElementsNumber; i++) {
 		wchar_t* str = pCOMPortStructArray[i].cCOMPort;
-		if (wcscmp(str, (wchar_t*)printer_com) == 0) {
+		if (wcscmp(str, printer_com) == 0) {
 			indexdevice = i;
 		}
 	}

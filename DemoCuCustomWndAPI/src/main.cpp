@@ -16,6 +16,7 @@
 
 #pragma warning(disable : 4996) //_CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS 1
+// #define ENABLE_PRINTER
 
 using namespace std;
 
@@ -24,8 +25,7 @@ int get_rndm_num() {
 	return num;
 }
 
-const wchar_t* get_wc(const char* c)
-{
+const wchar_t* get_wc(const char* c) {
 	const size_t cSize = strlen(c) + 1;
 	wchar_t* wc = new wchar_t[cSize];
 	mbstowcs(wc, c, cSize);
@@ -33,8 +33,7 @@ const wchar_t* get_wc(const char* c)
 	return wc;
 }
 
-int _tmain(int argc, _TCHAR* argv[])
-{
+int _tmain(int argc, _TCHAR* argv[]) {
 	// import config.ini
 	CSimpleIniA ini;
 	ini.SetUnicode();
@@ -71,7 +70,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	serial_device *rfid_reader = new serial_device(get_wc(rfid_com));
 	
 #ifdef ENABLE_PRINTER	
-	initPrinter(printer_com);
+	initPrinter(get_wc(printer_com));
 
 	PrintFontStruct pfs = PRINTFONTSTRUCT_INIT;
 	pfs.charWidth = FONT_SIZE_X1;
@@ -82,7 +81,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	pfs.italic = FALSE;
 	pfs.leftMarginValue = 50;
 #endif
-	char* linebuffer[32];
+	//char* linebuffer[32];
 
 	 // create filehandling infrastructure  
 	filehandle *fhandle = new filehandle(logfiles_path);
@@ -98,66 +97,51 @@ int _tmain(int argc, _TCHAR* argv[])
 		if (rfid_reader->read_rfid(&alter, &plz, answers_arr)) {
 			answers answersUser(alter, plz, answers_arr, answers_mask);
 			fhandle->write_line(answersUser.line, filestream);
-		}
+		
 #ifdef ENABLE_PRINTER
 
-		// Print Image
-		DoPrintImage(get_wc(logo_path));
+			// Print Image
+			DoPrintImage(get_wc(logo_path));
 
-		wchar_t buf_int[30];
-		wchar_t buf_str[30];
+			// Typ 1
+			pfs.bLineSpacing = 50;
+			DoPrintLine(L"Ja, aber woanders.", pfs);
+			pfs.bLineSpacing = 60;
+			answersUser.print_question(0, pfs);
 
-		/*
-		// Alter
-		swprintf(buf_int, sizeof buf_int, L"%d", answersUser1->alter);
-		wcscpy(buf_str, L"Alter: ");
-		DoPrintLine(wcscat(buf_str, buf_int), pfs);
+			// Typ 2
+			pfs.bLineSpacing = 50;
+			DoPrintLine(L"Na ja, mir egal.", pfs);
+			pfs.bLineSpacing = 60;
 
-		// PLZ
-		swprintf(buf_int, sizeof buf_int, L"%d", answersUser1->plz);
-		wcscpy(buf_str, L"PLZ:   ");
-		DoPrintLine(wcscat(buf_str, buf_int), pfs);
-		*/
+			answersUser.print_question(1, pfs);
 
-		// Typ 1
-		pfs.bLineSpacing = 50;
-		DoPrintLine(L"Ja, aber woanders.", pfs);
-		pfs.bLineSpacing = 60;
-		answersUser.print_question(0, pfs);
+			// Typ 3
+			pfs.bLineSpacing = 50;
+			DoPrintLine(L"Ja, weniger ist mehr.", pfs);
+			pfs.bLineSpacing = 60;
 
-		// Typ 2
-		pfs.bLineSpacing = 50;
-		DoPrintLine(L"Na ja, mir egal.", pfs);
-		pfs.bLineSpacing = 60;
+			answersUser.print_question(2, pfs);
 
-		answersUser.print_question(1, pfs);
+			// Typ 4
+			pfs.bLineSpacing = 50;
+			DoPrintLine(L"Ja, aber Veränderung nein.", pfs);
+			pfs.bLineSpacing = 60;
 
-		// Typ 3
-		pfs.bLineSpacing = 50;
-		DoPrintLine(L"Ja, weniger ist mehr.", pfs);
-		pfs.bLineSpacing = 60;
+			answersUser.print_question(3, pfs);
 
-		answersUser.print_question(2, pfs);
+			pfs.bLineSpacing = 50;
+			DoPrintLine(L"", pfs);
+			DoPrintLine(L"Im Film erfährst du mehr.", pfs);
+			DoPrintLine(L"Welcher Weg entspricht dir?", pfs);
+			DoPrintLine(L"Entscheide dich!", pfs);
 
-		// Typ 4
-		pfs.bLineSpacing = 50;
-		DoPrintLine(L"Ja, aber Veränderung nein.", pfs);
-		pfs.bLineSpacing = 60;
+			DoPrintBarcode();
 
-		answersUser.print_question(3, pfs);
-
-		pfs.bLineSpacing = 50;
-		DoPrintLine(L"", pfs);
-		DoPrintLine(L"Im Film erfährst du mehr.", pfs);
-		DoPrintLine(L"Welcher Weg entspricht dir?", pfs);
-		DoPrintLine(L"Entscheide dich!", pfs);
-
-		DoPrintBarcode();
-
-		DoCut();
+			DoCut();
 #endif
+		}
 	}
-	
 #ifdef ENABLE_PRINTER
 	// DeInit library
 	deInitPrinter();

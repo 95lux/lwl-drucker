@@ -9,7 +9,7 @@
 #include   "..\include\ccw_types.h"
 #include   "..\include\ccw_DeviceImpl.h"
 
-int initPrinter(char* printer_com);
+int initPrinter(const wchar_t* printer_com);
 
 void deInitPrinter();
 
@@ -23,7 +23,7 @@ void DoCloseDevice();
 
 int DoSelectCOMDevice(COMPortStruct * comportsList, DWORD dwDeviceNum);
 
-void DoOpenCOMPrinter(char* printer_com);
+void DoOpenCOMPrinter(const wchar_t* printer_com);
 
 int DoSelectPrinter(PrinterStruct * printersList, DWORD dwPrintersNum);
 
@@ -33,7 +33,7 @@ void DoPrintLine(wchar_t* Line, PrintFontStruct pfs);
 
 void DoPrintBarcode();
 
-void DoPrintImage(wchar_t *);
+void DoPrintImage(const wchar_t *);
 
 void DoCut();
 

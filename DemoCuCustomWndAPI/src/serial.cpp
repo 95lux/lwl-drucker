@@ -12,7 +12,7 @@ serial_device::serial_device(LPCWSTR comport) {
 }
 
 void serial_device::open_serial_port(LPCWSTR comport){
-    h_Serial = CreateFile(comport, GENERIC_READ | GENERIC_WRITE,
+        h_Serial = CreateFile(comport, GENERIC_READ | GENERIC_WRITE,
         0,
         0,
         OPEN_EXISTING,
@@ -115,13 +115,14 @@ bool serial_device::read_rfid(int* alter, int* plz, int (&answers_arr)[9]) {
     for (int i = 0; i < 9; i++) {
         
         std::string str_json = std::to_string(i + 1);
-        if (str_json.empty()) {
-            std::cout << "[err] Json doesn't hold expceted keys. " << std::endl;
+        std::string str = "a";
+        str += str_json;
+
+        if (root[str].asString().empty()) {
+            std::cout << "[err] Json doesn't hold expected keys. " << std::endl;
             return false;
         }
         
-        std::string str = "a";
-        str += str_json;        
         answers_arr[i] = std::stoi(root[str].asString());
     }
     std::cout << "[!] Successfully read RFID card!" << std::endl;
