@@ -12,9 +12,12 @@
 #include "drucker.h"
 #include "filehandle.h"
 #include "serial.h"
+#include "SimpleIni.h"
 
 #pragma warning(disable : 4996) //_CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS 1
+
+using namespace std;
 
 int get_rndm_num() {
 	int num = (rand() % (4 - 1 + 1)) + 1;
@@ -23,6 +26,20 @@ int get_rndm_num() {
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	// import config.ini
+	CSimpleIniA ini;
+	ini.SetUnicode();
+	SI_Error rc = ini.LoadFile("C:\\235Media\\lwldrucker\\config.ini");
+	if (rc < 0) {
+		std::cout << "[err] config.ini not found at 'C:\\235Media\\lwldrucker\\config.ini' Exiting program. " << std::endl;
+		return 0;
+	};
+
+	const char* logo_path = ini.GetValue("path", "logo_path", "default");
+	const char* logfile_path = ini.GetValue("path", "logfile_path", "default");
+	const char* printer_com = ini.GetValue("com", "printer_com", "default");
+	const char* rfid_com = ini.GetValue("com", "rfid_com", "default");
+
 	// Antworkmaste
 	#define ja_aber_woanders			1
 	#define naja_mir_egal				2
@@ -42,10 +59,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	};
 
 	char str_buf[32] = "";
-	serial_device *rfid_reader = new serial_device(L"COM4");
+	serial_device *rfid_reader = new serial_device((wchar_t*)rfid_com);
 	
 #ifdef ENABLE_PRINTER	
-	initPrinter();
+	initPrinter(printer_com);
 
 	PrintFontStruct pfs = PRINTFONTSTRUCT_INIT;
 	pfs.charWidth = FONT_SIZE_X1;
@@ -57,26 +74,27 @@ int _tmain(int argc, _TCHAR* argv[])
 	pfs.leftMarginValue = 50;
 #endif
 	char* linebuffer[32];
-	// std::fstream filestream;
-	std::string filename = get_filename();
-	std::fstream filestream(filename, std::fstream::in | std::fstream::out | std::fstream::app);
-	init_file(filestream);
-	// open_file(filestream);
+
+	 // create filehandling infrastructure  
+	filehandle *fhandle = new filehandle(logfile_path);
+	string filename = fhandle->get_filename();
+	fstream filestream(filename, fstream::in | fstream::out | fstream::app);
+	fhandle->init_file(filestream);
 
 	while (true){
 
-		int answers_array[] = { get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num() };
+		// int answers_array[] = { get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num() };
 		int alter, plz;
 		int answers_arr[9];
 		rfid_reader->read_rfid(&alter, &plz, answers_arr);
 
 		answers answersUser(alter, plz, answers_arr, answers_mask);
-		write_line(answersUser.line, filestream);
-		std::cout << "Press ENTER to print sample!" << std::endl;
-		getchar();
+		fhandle->write_line(answersUser.line, filestream);
+
+#ifdef ENABLE_PRINTER
 
 		// Print Image
-		DoPrintImage(L"C:\\235Media\\logo.jpg");
+		DoPrintImage((wchar_t*)logo_path);
 
 		wchar_t buf_int[30];
 		wchar_t buf_str[30];
@@ -93,7 +111,6 @@ int _tmain(int argc, _TCHAR* argv[])
 		DoPrintLine(wcscat(buf_str, buf_int), pfs);
 		*/
 
-#ifdef ENABLE_PRINTER
 		// Typ 1
 		pfs.bLineSpacing = 50;
 		DoPrintLine(L"Ja, aber woanders.", pfs);

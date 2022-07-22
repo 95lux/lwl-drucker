@@ -21,10 +21,10 @@ void serial_device::open_serial_port(LPCWSTR comport){
     if (h_Serial == INVALID_HANDLE_VALUE) {
         if (GetLastError() == ERROR_FILE_NOT_FOUND) {
             //serial port not found. Handle error here.
-            std::cout << "[err] Couldn't open COM4! RFID Reader not attached!" << std::endl;
+            std::cout << "[err] Couldn't open rfid reader on "<< comport <<"! RFID Reader not attached!" << std::endl;
         }
         //any other error. Handle error here.
-        std::cout << "[err] Couldn't open COM4! Unspecified Error!" << std::endl;
+        std::cout << "[err] Couldn't open rfid reader on "<< comport << "! Unspecified Error!" << std::endl;
     }
 }
 

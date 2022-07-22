@@ -88,7 +88,7 @@ wchar_t* DllName = L"CuCustomWndAPI.dll";
 CcwResult	ret;
 CcwLogVerbosity	logVerbosity = CCW_LOG_WARNING;			// Default value
 
-int initPrinter() {
+int initPrinter(char* printer_com) {
 
 	// Load library	
 	cDll = LoadLibraryW(DllName);
@@ -130,7 +130,7 @@ int initPrinter() {
 	DoGetLibRel();
 
 	// Open COM Device with Index 1
-	DoOpenCOMPrinter();
+	DoOpenCOMPrinter(printer_com);
 };
 
 void deInitPrinter() {
@@ -264,7 +264,7 @@ int DoSelectCOMDevice(COMPortStruct* comportsList, DWORD dwDeviceNum)
 	return n;
 }
 
-void DoOpenCOMPrinter()
+void DoOpenCOMPrinter(char* printer_com)
 {
 	CcwResult Result;
 	DWORD dwListElementsNumber;
@@ -303,7 +303,7 @@ void DoOpenCOMPrinter()
 	// Show a list of devices an ask the user to select one 
 	for (int i = 0; i < dwListElementsNumber; i++) {
 		wchar_t* str = pCOMPortStructArray[i].cCOMPort;
-		if (wcscmp(str, L"COM3") == 0) {
+		if (wcscmp(str, (wchar_t*)printer_com) == 0) {
 			indexdevice = i;
 		}
 	}

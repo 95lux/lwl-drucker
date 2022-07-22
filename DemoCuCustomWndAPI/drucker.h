@@ -9,7 +9,7 @@
 #include   "..\include\ccw_types.h"
 #include   "..\include\ccw_DeviceImpl.h"
 
-int initPrinter();
+int initPrinter(char* printer_com);
 
 void deInitPrinter();
 
@@ -23,7 +23,7 @@ void DoCloseDevice();
 
 int DoSelectCOMDevice(COMPortStruct * comportsList, DWORD dwDeviceNum);
 
-void DoOpenCOMPrinter();
+void DoOpenCOMPrinter(char* printer_com);
 
 int DoSelectPrinter(PrinterStruct * printersList, DWORD dwPrintersNum);
 
