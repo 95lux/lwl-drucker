@@ -11,7 +11,7 @@ public:
 	void init_serial_port(void);
 	void config_timeout(void);
 	bool read_line(char* str_out);
-	void read_rfid(int* alter, int* plz, int(&answers_arr)[9]);
+	bool read_rfid(int* alter, int* plz, int(&answers_arr)[9]);
 	serial_device(LPCWSTR);
 
 };

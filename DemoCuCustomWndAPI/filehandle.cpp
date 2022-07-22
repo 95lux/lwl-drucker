@@ -37,8 +37,14 @@ void filehandle::init_file(fstream& file) {
     string first_line;
     getline(file, first_line);
     file.close();
+    file.clear();
+    // check if file content exists, if not write first line to file
     if (first_line.length() <= 1) {
         file.open(get_filename());
         write_line("Alter, PLZ, Frage 1, Frage 2, Frage 3, Frage 4, Frage 5, Frage 6, Frage 7, Frage 8, Frage 9 ", file);
+    }
+    else {
+        // reopen filestream for further writing
+        file.open(get_filename(), fstream::out | fstream::app);
     }
 }

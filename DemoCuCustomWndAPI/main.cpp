@@ -95,11 +95,10 @@ int _tmain(int argc, _TCHAR* argv[])
 		// int answers_array[] = { get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num() };
 		int alter, plz;
 		int answers_arr[9];
-		rfid_reader->read_rfid(&alter, &plz, answers_arr);
-
-		answers answersUser(alter, plz, answers_arr, answers_mask);
-		fhandle->write_line(answersUser.line, filestream);
-
+		if (rfid_reader->read_rfid(&alter, &plz, answers_arr)) {
+			answers answersUser(alter, plz, answers_arr, answers_mask);
+			fhandle->write_line(answersUser.line, filestream);
+		}
 #ifdef ENABLE_PRINTER
 
 		// Print Image
