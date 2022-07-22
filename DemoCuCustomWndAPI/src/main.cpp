@@ -88,58 +88,63 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	string filename = fhandle->get_filename();
 	fstream filestream(filename, fstream::in | fstream::out | fstream::app);
 	fhandle->init_file(filestream);
+	string last_line = "";
 
 	while (true){
 
 		// int answers_array[] = { get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num() };
 		int alter, plz;
 		int answers_arr[9];
+		// only carry on processing on correct data read
 		if (rfid_reader->read_rfid(&alter, &plz, answers_arr)) {
 			answers answersUser(alter, plz, answers_arr, answers_mask);
-			fhandle->write_line(answersUser.line, filestream);
-		
+			if (last_line.compare(answersUser.line) != 0) {
+				fhandle->write_line(answersUser.line, filestream);
+				last_line = answersUser.line;
+
 #ifdef ENABLE_PRINTER
 
-			// Print Image
-			DoPrintImage(get_wc(logo_path));
+				// Print Image
+				DoPrintImage(get_wc(logo_path));
 
-			// Typ 1
-			pfs.bLineSpacing = 50;
-			DoPrintLine(L"Ja, aber woanders.", pfs);
-			pfs.bLineSpacing = 60;
-			answersUser.print_question(0, pfs);
+				// Typ 1
+				pfs.bLineSpacing = 50;
+				DoPrintLine(L"Ja, aber woanders.", pfs);
+				pfs.bLineSpacing = 60;
+				answersUser.print_question(0, pfs);
 
-			// Typ 2
-			pfs.bLineSpacing = 50;
-			DoPrintLine(L"Na ja, mir egal.", pfs);
-			pfs.bLineSpacing = 60;
+				// Typ 2
+				pfs.bLineSpacing = 50;
+				DoPrintLine(L"Na ja, mir egal.", pfs);
+				pfs.bLineSpacing = 60;
 
-			answersUser.print_question(1, pfs);
+				answersUser.print_question(1, pfs);
 
-			// Typ 3
-			pfs.bLineSpacing = 50;
-			DoPrintLine(L"Ja, weniger ist mehr.", pfs);
-			pfs.bLineSpacing = 60;
+				// Typ 3
+				pfs.bLineSpacing = 50;
+				DoPrintLine(L"Ja, weniger ist mehr.", pfs);
+				pfs.bLineSpacing = 60;
 
-			answersUser.print_question(2, pfs);
+				answersUser.print_question(2, pfs);
 
-			// Typ 4
-			pfs.bLineSpacing = 50;
-			DoPrintLine(L"Ja, aber Veränderung nein.", pfs);
-			pfs.bLineSpacing = 60;
+				// Typ 4
+				pfs.bLineSpacing = 50;
+				DoPrintLine(L"Ja, aber Veränderung nein.", pfs);
+				pfs.bLineSpacing = 60;
 
-			answersUser.print_question(3, pfs);
+				answersUser.print_question(3, pfs);
 
-			pfs.bLineSpacing = 50;
-			DoPrintLine(L"", pfs);
-			DoPrintLine(L"Im Film erfährst du mehr.", pfs);
-			DoPrintLine(L"Welcher Weg entspricht dir?", pfs);
-			DoPrintLine(L"Entscheide dich!", pfs);
+				pfs.bLineSpacing = 50;
+				DoPrintLine(L"", pfs);
+				DoPrintLine(L"Im Film erfährst du mehr.", pfs);
+				DoPrintLine(L"Welcher Weg entspricht dir?", pfs);
+				DoPrintLine(L"Entscheide dich!", pfs);
 
-			DoPrintBarcode();
+				DoPrintBarcode();
 
-			DoCut();
+				DoCut();
 #endif
+			}
 		}
 	}
 #ifdef ENABLE_PRINTER
