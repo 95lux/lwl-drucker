@@ -24,6 +24,15 @@ int get_rndm_num() {
 	return num;
 }
 
+const wchar_t* get_wc(const char* c)
+{
+	const size_t cSize = strlen(c) + 1;
+	wchar_t* wc = new wchar_t[cSize];
+	mbstowcs(wc, c, cSize);
+
+	return wc;
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	// import config.ini
@@ -36,7 +45,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	};
 
 	const char* logo_path = ini.GetValue("path", "logo_path", "default");
-	const char* logfile_path = ini.GetValue("path", "logfile_path", "default");
+	const char* logfiles_path = ini.GetValue("path", "logfiles_path", "default");
 	const char* printer_com = ini.GetValue("com", "printer_com", "default");
 	const char* rfid_com = ini.GetValue("com", "rfid_com", "default");
 
@@ -59,7 +68,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	};
 
 	char str_buf[32] = "";
-	serial_device *rfid_reader = new serial_device((wchar_t*)rfid_com);
+	serial_device *rfid_reader = new serial_device(get_wc(rfid_com));
 	
 #ifdef ENABLE_PRINTER	
 	initPrinter(printer_com);
@@ -76,7 +85,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	char* linebuffer[32];
 
 	 // create filehandling infrastructure  
-	filehandle *fhandle = new filehandle(logfile_path);
+	filehandle *fhandle = new filehandle(logfiles_path);
 	string filename = fhandle->get_filename();
 	fstream filestream(filename, fstream::in | fstream::out | fstream::app);
 	fhandle->init_file(filestream);
@@ -94,7 +103,7 @@ int _tmain(int argc, _TCHAR* argv[])
 #ifdef ENABLE_PRINTER
 
 		// Print Image
-		DoPrintImage((wchar_t*)logo_path);
+		DoPrintImage(get_wc(logo_path));
 
 		wchar_t buf_int[30];
 		wchar_t buf_str[30];
