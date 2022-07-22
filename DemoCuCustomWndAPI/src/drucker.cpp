@@ -5,6 +5,8 @@
 #include   "../include/ccw_types.h"
 #include   "../include/ccw_DeviceImpl.h"
 
+
+#pragma warning(disable : 4996) //_CRT_SECURE_NO_WARNINGS
 #define   LoadAndCheck(Func, Type, Handle, Name, Result)											\
 	if ((Func = (Type) GetProcAddress (Handle, Name)) == NULL)										\
 							  {																		\
@@ -386,11 +388,11 @@ void DoPrintBarcode()
 	printf("DoPrintBarcode: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 }
 
-void DoPrintImage(wchar_t *path)
+void DoPrintImage(const wchar_t *path)
 {
 	// wchar_t   Line[MAXCHARBUFFER] = ;
 	wchar_t* Line = (wchar_t*)malloc(sizeof(char)*MAXCHARBUFFER);
-	Line = path;
+	wcscpy(Line, path);
 	CcwResult Result;
 
 	//Function available ONLY if a device is open
