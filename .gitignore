@@ -3,3 +3,9 @@
 **/.x64
 *.exe
 *.obj
+
+/DemoCuCustomWndAPI/x64/Debug/*
+!DemoCuCustomWndAPI/x64/Debug/CuCustomWndAPI.dll
+/DemoCuCustomWndAPI/x64/Release/*
+!DemoCuCustomWndAPI/x64/Release/CuCustomWndAPI.dll
+

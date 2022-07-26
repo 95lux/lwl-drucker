@@ -66,6 +66,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		{naja_mir_egal				,ja_aber_veränderung_nein	,ja_aber_woanders					,ja_weniger_ist_mehr		}
 	};
 
+	// init RFID reader
 	char str_buf[32] = "";
 	serial_device *rfid_reader = new serial_device(get_wc(rfid_com));
 	
