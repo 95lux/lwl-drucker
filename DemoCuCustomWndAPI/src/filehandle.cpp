@@ -12,7 +12,13 @@
 
 using namespace std;
 
-filehandle::filehandle(const char* logfile_path): logfile_path(logfile_path) {}
+filehandle::filehandle(const char* logfiles_path): logfiles_path(logfiles_path) {
+    //for (int i = 0; i < num_paths; i++) {
+    //    this->logfile_paths[i] = logfile_paths[i];
+    // }
+}
+
+filehandle::filehandle(){}
 
 string filehandle::get_filename() {
     auto t = time(nullptr);
@@ -21,7 +27,7 @@ string filehandle::get_filename() {
     ostringstream oss;
     oss << std::put_time(&tm, "%d-%m-%Y");
     auto date = oss.str();
-    string string = logfile_path;
+    string string = logfiles_path;
     string += date + ".csv";
     return string;
 }

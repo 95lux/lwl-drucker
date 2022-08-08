@@ -16,7 +16,7 @@
 
 #pragma warning(disable : 4996) //_CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS 1
-#define ENABLE_PRINTER
+// #define ENABLE_PRINTER
 
 using namespace std;
 
@@ -43,8 +43,20 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		return 0;
 	};
 
+	CSimpleIniA::TNamesDepend keys;
+	ini.GetAllKeys("LOGFILES_PATHS", keys);
+	const int num_paths = keys.size();
+	char kack[200];
+	
+	CSimpleIniA::TNamesDepend::const_iterator it;
+	const char* logfiles_paths[16];
+	int i = 0;
+	for (it = keys.begin(); it != keys.end(); ++it) {
+		logfiles_paths[i] = ini.GetValue("logfiles_paths", it->pItem, "default");
+		i++;
+	}
+
 	const char* logo_path = ini.GetValue("path", "logo_path", "default");
-	const char* logfiles_path = ini.GetValue("path", "logfiles_path", "default");
 	const char* printer_com = ini.GetValue("com", "printer_com", "default");
 	const char* rfid_com = ini.GetValue("com", "rfid_com", "default");
 
@@ -84,12 +96,21 @@ int _tmain(int argc, _TCHAR* argv[]) {
 #endif
 	//char* linebuffer[32];
 
-	 // create filehandling infrastructure  
-	filehandle *fhandle = new filehandle(logfiles_path);
-	string filename = fhandle->get_filename();
-	fstream filestream(filename, fstream::in | fstream::out | fstream::app);
-	fhandle->init_file(filestream);
-	string last_line = "";
+	 // create filehandling infrastructure
+	filehandle **fhandles  = new filehandle*[16];
+	string filenames[16];
+	string last_line;
+	for (int i = 0; i < num_paths; i++) {
+		// filehandle* fhandle = new filehandle(logfiles_paths[i]);
+		fhandles[i] = new filehandle(logfiles_paths[i]);
+		filenames[i] = fhandles[i]->get_filename();
+		fstream filestream(filenames[i], fstream::in | fstream::out | fstream::app);
+		fhandles[i]->init_file(filestream);
+		last_line = "";
+		filestream.close();
+	}
+	// filehandle *fhandle = new filehandle(logfiles_paths, num_paths);
+	
 
 	while (true){
 
@@ -100,7 +121,12 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		if (rfid_reader->read_rfid(&alter, &plz, answers_arr)) {
 			answers answersUser(alter, plz, answers_arr, answers_mask);
 			if (last_line.compare(answersUser.line) != 0) {
-				fhandle->write_line(answersUser.line, filestream);
+				for (int i = 0; i < num_paths; i++) {
+					fstream filestream(filenames[i], fstream::in | fstream::out | fstream::app);
+					fhandles[i]->write_line(answersUser.line, filestream);
+					filestream.close();
+				}
+
 				last_line = answersUser.line;
 
 #ifdef ENABLE_PRINTER
