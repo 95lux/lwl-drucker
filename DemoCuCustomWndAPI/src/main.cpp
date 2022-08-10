@@ -99,14 +99,12 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	 // create filehandling infrastructure
 	filehandle **fhandles  = new filehandle*[16];
 	string filenames[16];
-	string last_line;
 	for (int i = 0; i < num_paths; i++) {
 		// filehandle* fhandle = new filehandle(logfiles_paths[i]);
 		fhandles[i] = new filehandle(logfiles_paths[i]);
 		filenames[i] = fhandles[i]->get_filename();
 		fstream filestream(filenames[i], fstream::in | fstream::out | fstream::app);
 		fhandles[i]->init_file(filestream);
-		last_line = "";
 		filestream.close();
 	}
 	// filehandle *fhandle = new filehandle(logfiles_paths, num_paths);
@@ -120,14 +118,11 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		// only carry on processing on correct data read
 		if (rfid_reader->read_rfid(&alter, &plz, answers_arr)) {
 			answers answersUser(alter, plz, answers_arr, answers_mask);
-			if (last_line.compare(answersUser.line) != 0) {
 				for (int i = 0; i < num_paths; i++) {
 					fstream filestream(filenames[i], fstream::in | fstream::out | fstream::app);
 					fhandles[i]->write_line(answersUser.line, filestream);
 					filestream.close();
 				}
-
-				last_line = answersUser.line;
 
 #ifdef ENABLE_PRINTER
 
@@ -171,7 +166,6 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 				DoCut();
 #endif
-			}
 		}
 	}
 #ifdef ENABLE_PRINTER
