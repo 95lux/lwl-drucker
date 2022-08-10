@@ -16,7 +16,7 @@
 
 #pragma warning(disable : 4996) //_CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS 1
-// #define ENABLE_PRINTER
+#define ENABLE_PRINTER
 
 using namespace std;
 

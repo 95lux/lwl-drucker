@@ -40,17 +40,19 @@ void answers::calcPercentage() {
 	for (int i = 0; i < ANZ_FRAGEN; i++) {
 		// Gesamt aller Typzuweisungen zählen
 		for (int j = 0; j < 4; j++) {
-			if (answers_mask[i][j] == 1) {
-				total_typ1++;
-			}
-			if (answers_mask[i][j] == 2) {
-				total_typ2++;
-			}
-			if (answers_mask[i][j] == 3) {
-				total_typ3++;
-			}
-			if (answers_mask[i][j] == 4) {
-				total_typ4++;
+			if (answers_arr[i] != 0) {
+				if (answers_mask[i][j] == 1) {
+					total_typ1++;
+				}
+				if (answers_mask[i][j] == 2) {
+					total_typ2++;
+				}
+				if (answers_mask[i][j] == 3) {
+					total_typ3++;
+				}
+				if (answers_mask[i][j] == 4) {
+					total_typ4++;
+				}
 			}
 		}
 		// Fragen Auswerten

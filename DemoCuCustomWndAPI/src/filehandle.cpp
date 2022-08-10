@@ -25,7 +25,7 @@ string filehandle::get_filename() {
     auto tm = *localtime(&t);
 
     ostringstream oss;
-    oss << std::put_time(&tm, "%d-%m-%Y");
+    oss << std::put_time(&tm, "%Y-%m-%d");
     auto date = oss.str();
     string string = logfiles_path;
     string += date + ".csv";
