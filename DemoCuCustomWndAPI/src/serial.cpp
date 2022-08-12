@@ -100,17 +100,29 @@ bool serial_device::read_rfid(int* alter, int* plz, int (&answers_arr)[9]) {
     const std::unique_ptr<Json::CharReader> reader(builder.newCharReader());
     if (!reader->parse(raw_json.c_str(), raw_json.c_str() + raw_json_length, &root,
         &err)) {
-        std::cout << "[err] corrupt Json format from RFID reader!" << std::endl;
+        std::cout << "[err] Corrupt JSON format from RFID reader!" << std::endl;
+        std::cout << raw_json.c_str() << std::endl;
         return false;
     }
 
     // convert key value from string to int. reading value as int directly throws json logic excpetion
-    if (root["age"].asString().empty() || root["plz"].asString().empty()) {
-        std::cout << "[err] Json doesn't hold expceted keys. " << std::endl;
-        return false;
+    if (root["age"].asString().empty()) {
+        std::cout << "[err] Empty JSON value from key \"age\"" << std::endl;
+        std::cout << raw_json.c_str() << std::endl;
+        *alter = 0;
     }
-    *alter = std::stoi(root["age"].asString());
-    *plz = std::stoi(root["plz"].asString());
+    else {
+        *alter = std::stoi(root["age"].asString());
+
+    }
+    if (root["plz"].asString().empty()) {
+        std::cout << "[err] Empty JSON value from key \"plz\"" << std::endl;
+        std::cout << raw_json.c_str() << std::endl;
+        *plz = 0;
+    }
+    else {
+        *plz = std::stoi(root["plz"].asString());
+    }
 
     for (int i = 0; i < 9; i++) {
         
@@ -119,11 +131,15 @@ bool serial_device::read_rfid(int* alter, int* plz, int (&answers_arr)[9]) {
         str += str_json;
 
         if (root[str].asString().empty()) {
-            std::cout << "[err] Json doesn't hold expected keys. " << std::endl;
-            return false;
+            std::cout << "[err] Empty JSON value from key "<< str << std::endl;
+            std::cout << raw_json.c_str() << std::endl;
+            // return false;
+            answers_arr[i] = 0;
+        }
+        else {
+            answers_arr[i] = std::stoi(root[str].asString());
         }
         
-        answers_arr[i] = std::stoi(root[str].asString());
     }
     std::cout << "[!] Successfully read RFID card!" << std::endl;
     return true;
