@@ -232,7 +232,7 @@ void DoGetLibRel()
 	//Get API version
 	CcwResult result = FnGetAPIVersion(szLibRel);
 	if (result != CcwResult_OK)
-		printf("Error %d (%ws)\n", result, CcwResultToText(result));
+		printf("[err] %d (%ws)\n", result, CcwResultToText(result));
 	else
 		printf("Library release %ws.\n", szLibRel);
 
@@ -244,7 +244,7 @@ void DoCloseDevice()
 	// Already initialized?
 	if (!m_bDeviceOpen)
 	{
-		printf("No device to close!\n");
+		printf("[err] No device to close!\n");
 		return;
 	}
 
@@ -255,14 +255,14 @@ void DoCloseDevice()
 		m_bDeviceOpen = FALSE;
 	}
 
-	printf("DeInitalize: Result = %d (%ws)\n", Result, CcwResultToText(Result));
+	printf("[!] DeInitalize: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 }
 
 int DoSelectCOMDevice(COMPortStruct* comportsList, DWORD dwDeviceNum)
 {
 	char Line[32] = { 0 };
 	DWORD n = 1;
-	printf("Selected device with index: %d\n", n);
+	printf("[!] Selected device with index: %d\n", n);
 	return n;
 }
 
@@ -277,7 +277,7 @@ void DoOpenCOMPrinter(const wchar_t* printer_com)
 	if (Result != CcwResult_OK)
 	{
 		//Error
-		printf("DoOpenCOMPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
+		printf("[!] DoOpenCOMPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 		return;
 	}
 
@@ -285,7 +285,7 @@ void DoOpenCOMPrinter(const wchar_t* printer_com)
 	if (dwListElementsNumber == 0)
 	{
 		//Error
-		printf("DoOpenCOMPrinter: No COM ports found!\n");
+		printf("[!] DoOpenCOMPrinter: No COM ports found!\n");
 		return;
 	}
 
@@ -298,7 +298,7 @@ void DoOpenCOMPrinter(const wchar_t* printer_com)
 		delete[] pCOMPortStructArray;
 
 		//Error
-		printf("DoOpenCOMPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
+		printf("[!] DoOpenCOMPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 		return;
 	}
 	int indexdevice = 0;
@@ -315,7 +315,7 @@ void DoOpenCOMPrinter(const wchar_t* printer_com)
 		delete[] pCOMPortStructArray;
 
 		//Error
-		printf("DoOpenCOMPrinter: No device select\n");
+		printf("[err] DoOpenCOMPrinter: No device select\n");
 		return;
 	}
 
@@ -326,13 +326,13 @@ void DoOpenCOMPrinter(const wchar_t* printer_com)
 	if (Result != CcwResult_OK)
 	{
 		//Error
-		printf("DoOpenCOMPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
+		printf("[!] DoOpenCOMPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 		return;
 	}
 
 	m_bDeviceOpen = TRUE;
 
-	printf("DoOpenCOMPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
+	printf("[!] DoOpenCOMPrinter: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 }
 
 void DoPrintLine(wchar_t *Line, PrintFontStruct pfs)
@@ -342,7 +342,7 @@ void DoPrintLine(wchar_t *Line, PrintFontStruct pfs)
 	//Function available ONLY if a device is open
 	if (!m_bDeviceOpen)
 	{
-		printf("Close: Error - no device selected\n");
+		printf("[err] Close: Error - no device selected\n");
 		return;
 	}
 	//Print Text
@@ -350,11 +350,11 @@ void DoPrintLine(wchar_t *Line, PrintFontStruct pfs)
 	if (Result != CcwResult_OK)
 	{
 		//Error
-		printf("DoPrintText: Result = %d (%ws)\n", Result, CcwResultToText(Result));
+		printf("[!] DoPrintText: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 		return;
 	}
 
-	printf("DoPrintText: Result = %d (%ws)\n", Result, CcwResultToText(Result));
+	printf("[!] DoPrintText: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 }
 
 void DoPrintBarcode()
@@ -365,7 +365,7 @@ void DoPrintBarcode()
 	//Function available ONLY if a device is open
 	if (!m_bDeviceOpen)
 	{
-		printf("Close: Error - no device selected\n");
+		printf("[err] Close: Error - no device selected\n");
 		return;
 	}
 
@@ -381,11 +381,11 @@ void DoPrintBarcode()
 	if (Result != CcwResult_OK)
 	{
 		//Error
-		printf("DoPrintBarcode: Result = %d (%ws)\n", Result, CcwResultToText(Result));
+		printf("[!] DoPrintBarcode: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 		return;
 	}
 
-	printf("DoPrintBarcode: Result = %d (%ws)\n", Result, CcwResultToText(Result));
+	printf("[!] DoPrintBarcode: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 }
 
 void DoPrintImage(const wchar_t *path)
@@ -398,7 +398,7 @@ void DoPrintImage(const wchar_t *path)
 	//Function available ONLY if a device is open
 	if (!m_bDeviceOpen)
 	{
-		printf("Close: Error - no device selected\n");
+		printf("[err] Close: Error - no device selected\n");
 		return;
 	}
 
@@ -413,11 +413,11 @@ void DoPrintImage(const wchar_t *path)
 	if (Result != CcwResult_OK)
 	{
 		//Error
-		printf("DoPrintImage: Result = %d (%ws)\n", Result, CcwResultToText(Result));
+		printf("[!] DoPrintImage: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 		return;
 	}
 
-	printf("DoPrintImage: Result = %d (%ws)\n", Result, CcwResultToText(Result));
+	printf("[!] DoPrintImage: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 }
 
 void DoCut()
@@ -425,13 +425,13 @@ void DoCut()
 	//Function available ONLY if a device is open
 	if (!m_bDeviceOpen)
 	{
-		printf("Close: Error - no device selected\n");
+		printf("[err] Close: Error - no device selected\n");
 		return;
 	}
 
 	//Cut (total cut)
 	CcwResult Result = FnCut(m_dwDeviceID, CUT_TOTAL);
-	printf("DoCut: Result = %d (%ws)\n", Result, CcwResultToText(Result));
+	printf("[!] DoCut: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 }
 
 void DoEject()
@@ -439,13 +439,13 @@ void DoEject()
 	//Function available ONLY if a device is open
 	if (!m_bDeviceOpen)
 	{
-		printf("Close: Error - no device selected\n");
+		printf("[err] Close: Error - no device selected\n");
 		return;
 	}
 
 	//Eject (eject)
 	CcwResult Result = FnEject(m_dwDeviceID, EJ_EJECT);
-	printf("DoEject: Result = %d (%ws)\n", Result, CcwResultToText(Result));
+	printf("[!] DoEject: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 }
 
 void DoFeed()
@@ -453,13 +453,13 @@ void DoFeed()
 	//Function available ONLY if a device is open
 	if (!m_bDeviceOpen)
 	{
-		printf("Close: Error - no device selected\n");
+		printf("[err] Close: Error - no device selected\n");
 		return;
 	}
 
 	//Feed (force to 2)
 	CcwResult Result = FnFeed(m_dwDeviceID, 2);
-	printf("DoFeed: Result = %d (%ws)\n", Result, CcwResultToText(Result));
+	printf("[!] DoFeed: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 }
 
 void DoGetStatus()
@@ -467,7 +467,7 @@ void DoGetStatus()
 	//Function available ONLY if a device is open
 	if (!m_bDeviceOpen)
 	{
-		printf("Close: Error - no device selected\n");
+		printf("[err] Close: Error - no device selected\n");
 		return;
 	}
 
@@ -479,7 +479,7 @@ void DoGetStatus()
 	if (Result != CcwResult_OK)
 	{
 		//Error
-		printf("DoGetStatus: Result = %d (%ws)\n", Result, CcwResultToText(Result));
+		printf("[!] DoGetStatus: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 		return;
 	}
 
@@ -491,7 +491,7 @@ void DoGetStatus()
 	printf("%ws\n", strText);
 	delete[] strText;
 
-	printf("DoGetStatus: Result = %d (%ws)\n", Result, CcwResultToText(Result));
+	printf("[!] DoGetStatus: Result = %d (%ws)\n", Result, CcwResultToText(Result));
 }
 
 
