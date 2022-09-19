@@ -143,12 +143,14 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source.cpp" />
     <ClCompile Include="src\answers.cpp" />
     <ClCompile Include="src\DemoCuCustomWndAPI.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\drucker.cpp" />
+    <ClCompile Include="src\error.cpp" />
     <ClCompile Include="src\filehandle.cpp" />
     <ClCompile Include="src\jsoncpp.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -164,6 +166,7 @@
     <ClInclude Include="include\ccw_Status.h" />
     <ClInclude Include="include\ccw_Types.h" />
     <ClInclude Include="include\drucker.h" />
+    <ClInclude Include="include\error.h" />
     <ClInclude Include="include\filehandle.h" />
     <ClInclude Include="include\json-forwards.h" />
     <ClInclude Include="include\json.h" />

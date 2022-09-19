@@ -32,6 +32,17 @@ string filehandle::get_filename() {
     return string;
 }
 
+void filehandle::write_err_line(string line, fstream& file) {
+    if (file.is_open()) {
+        auto t = time(nullptr);
+        auto tm = *localtime(&t);
+        ostringstream oss;
+        oss << std::put_time(&tm, "%Y-%m-%d %T");
+        auto date = oss.str();
+        file << date << "   " << line << endl;
+    }
+}
+
 void filehandle::write_line(string line, fstream& file) {
     if (file.is_open()) {
         file << line << endl;

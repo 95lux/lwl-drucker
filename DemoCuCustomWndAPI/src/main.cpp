@@ -162,6 +162,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 				DoPrintLine(L"Im Film erfährst du mehr.", pfs);
 				DoPrintLine(L"Welcher Weg entspricht dir?", pfs);
 				DoPrintLine(L"Entscheide dich!", pfs);
+				DoPrintLine(L"",pfs);
+				DoPrintLine(L"Mehr Infos zur Ausstellung findest du hier:", pfs);
 
 				DoPrintBarcode();
 
