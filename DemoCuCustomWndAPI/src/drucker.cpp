@@ -90,6 +90,7 @@ wchar_t* DllName = L"CuCustomWndAPI.dll";
 CcwResult	ret;
 CcwLogVerbosity	logVerbosity = CCW_LOG_WARNING;			// Default value
 
+
 int initPrinter(const wchar_t* printer_com) {
 
 	// Load library	

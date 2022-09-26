@@ -32,7 +32,7 @@ string filehandle::get_filename() {
     return string;
 }
 
-void filehandle::write_err_line(string line, fstream& file) {
+/*void filehandle::write_err_line(string line, fstream& file) {
     if (file.is_open()) {
         auto t = time(nullptr);
         auto tm = *localtime(&t);
@@ -41,7 +41,7 @@ void filehandle::write_err_line(string line, fstream& file) {
         auto date = oss.str();
         file << date << "   " << line << endl;
     }
-}
+}*/
 
 void filehandle::write_line(string line, fstream& file) {
     if (file.is_open()) {

@@ -17,6 +17,7 @@
 #pragma warning(disable : 4996) //_CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS 1
 #define ENABLE_PRINTER
+#define ENABLE_RFID
 
 using namespace std;
 
@@ -68,15 +69,15 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	int answers_mask[9][4] =
 	{
-		{ja_weniger_ist_mehr		,ja_aber_veränderung_nein	,ja_aber_woanders					,naja_mir_egal				},
-		{ja_weniger_ist_mehr		,naja_mir_egal				,ja_aber_veränderung_nein			,ja_aber_woanders			},
-		{ja_weniger_ist_mehr		,ja_aber_veränderung_nein	,ja_aber_woanders					,naja_mir_egal				},
-		{ja_weniger_ist_mehr		,naja_mir_egal				,ja_aber_veränderung_nein			,ja_aber_woanders			},
-		{ja_aber_veränderung_nein	,ja_aber_woanders			,naja_mir_egal						,ja_weniger_ist_mehr		},
-		{ja_weniger_ist_mehr		,ja_aber_woanders			,naja_mir_egal						,ja_aber_veränderung_nein	},
-		{naja_mir_egal				,ja_aber_woanders			,ja_weniger_ist_mehr				,ja_aber_veränderung_nein	},
-		{ja_aber_woanders			,naja_mir_egal				,ja_weniger_ist_mehr				,ja_aber_veränderung_nein	},
-		{naja_mir_egal				,ja_aber_veränderung_nein	,ja_aber_woanders					,ja_weniger_ist_mehr		}
+		{ja_weniger_ist_mehr		,ja_aber_veränderung_nein	,ja_aber_woanders					,naja_mir_egal				}, 
+		{ja_weniger_ist_mehr		,naja_mir_egal				,ja_aber_veränderung_nein			,ja_aber_woanders			}, // korrekt
+		{ja_weniger_ist_mehr		,ja_aber_veränderung_nein	,ja_aber_woanders					,naja_mir_egal				}, // korrekt
+		{ja_weniger_ist_mehr		,naja_mir_egal				,ja_aber_veränderung_nein			,ja_aber_woanders			}, // korrekt
+		{ja_aber_veränderung_nein	,ja_aber_woanders			,naja_mir_egal						,ja_weniger_ist_mehr		}, // korrekt
+		{ja_weniger_ist_mehr		,ja_aber_woanders			,naja_mir_egal						,ja_aber_veränderung_nein	}, // korrekt
+		{naja_mir_egal				,ja_aber_woanders			,ja_weniger_ist_mehr				,ja_aber_veränderung_nein	}, // korrekt
+		{ja_aber_woanders			,naja_mir_egal				,ja_weniger_ist_mehr				,ja_aber_veränderung_nein	}, // korrekt
+		{naja_mir_egal				,ja_aber_veränderung_nein	,ja_aber_woanders					,ja_weniger_ist_mehr		} // korrekt
 	};
 
 	// init RFID reader
@@ -109,15 +110,22 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		filestream.close();
 	}
 	// filehandle *fhandle = new filehandle(logfiles_paths, num_paths);
+	int alter, plz;
 	
-
-	while (true){
-
-		// int answers_array[] = { get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num(),get_rndm_num() };
-		int alter, plz;
+#ifndef ENABLE_RFID
+		alter = 1337;
+		plz = 1337;
+		int	answers_arr[] = {2, 1, 2, 1, 1, 4, 3, 0, 0};
+#endif
+#ifdef ENABLE_RFID
 		int answers_arr[9];
+
+		while (true) {
+
 		// only carry on processing on correct data read
 		if (rfid_reader->read_rfid(&alter, &plz, answers_arr)) {
+#endif
+
 			answers answersUser(alter, plz, answers_arr, answers_mask);
 				for (int i = 0; i < num_paths; i++) {
 					fstream filestream(filenames[i], fstream::in | fstream::out | fstream::app);
@@ -163,14 +171,21 @@ int _tmain(int argc, _TCHAR* argv[]) {
 				DoPrintLine(L"Welcher Weg entspricht dir?", pfs);
 				DoPrintLine(L"Entscheide dich!", pfs);
 				DoPrintLine(L"",pfs);
-				DoPrintLine(L"Mehr Infos zur Ausstellung findest du hier:", pfs);
+				DoPrintLine(L"Mehr Infos zur Ausstellung", pfs);
+				DoPrintLine(L"findest du hier:", pfs);
 
 				DoPrintBarcode();
 
 				DoCut();
 #endif
+#ifdef ENABLE_RFID
 		}
 	}
+
+#endif
+#ifndef ENABLE_RIFD
+	while(true)
+#endif
 #ifdef ENABLE_PRINTER
 	// DeInit library
 	deInitPrinter();

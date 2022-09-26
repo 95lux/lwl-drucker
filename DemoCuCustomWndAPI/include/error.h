@@ -6,4 +6,4 @@
 #include <iomanip>
 #include <sstream>
 
-void write_err_line(string line, fstream& file);
+//void write_err_line(string line, fstream& file);
