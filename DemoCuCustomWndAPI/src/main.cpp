@@ -86,7 +86,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	
 #ifdef ENABLE_PRINTER	
 	initPrinter(get_wc(printer_com));
-
+#endif
 	PrintFontStruct pfs = PRINTFONTSTRUCT_INIT;
 	pfs.charWidth = FONT_SIZE_X1;
 	pfs.charHeight = FONT_SIZE_X1;
@@ -95,7 +95,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	pfs.emphasized = TRUE;
 	pfs.italic = FALSE;
 	pfs.leftMarginValue = 50;
-#endif
+
 	//char* linebuffer[32];
 
 	 // create filehandling infrastructure
@@ -115,7 +115,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 #ifndef ENABLE_RFID
 		alter = 1337;
 		plz = 1337;
-		int	answers_arr[] = {2, 1, 2, 1, 1, 4, 3, 0, 0};
+		int	answers_arr[] = {4, 2, 4, 2, 3, 3, 1, 2, 1};
 #endif
 #ifdef ENABLE_RFID
 		int answers_arr[9];
@@ -142,28 +142,43 @@ int _tmain(int argc, _TCHAR* argv[]) {
 				pfs.bLineSpacing = 50;
 				DoPrintLine(L"Ja, aber woanders.", pfs);
 				pfs.bLineSpacing = 60;
+#endif
+#ifndef ENABLE_PRINTER
 				answersUser.print_question(0, pfs);
+#endif
+#ifdef ENABLE_PRINTER
 
 				// Typ 2
 				pfs.bLineSpacing = 50;
 				DoPrintLine(L"Na ja, mir egal.", pfs);
 				pfs.bLineSpacing = 60;
-
+#endif
+#ifndef ENABLE_PRINTER
 				answersUser.print_question(1, pfs);
+#endif
+#ifdef ENABLE_PRINTER
 
 				// Typ 3
 				pfs.bLineSpacing = 50;
 				DoPrintLine(L"Ja, weniger ist mehr.", pfs);
 				pfs.bLineSpacing = 60;
 
+#endif
+#ifndef ENABLE_PRINTER
 				answersUser.print_question(2, pfs);
+#endif
+#ifdef ENABLE_PRINTER
 
 				// Typ 4
 				pfs.bLineSpacing = 50;
 				DoPrintLine(L"Ja, aber Veränderung nein.", pfs);
 				pfs.bLineSpacing = 60;
 
+#endif
+#ifndef ENABLE_PRINTER
 				answersUser.print_question(3, pfs);
+#endif
+#ifdef ENABLE_PRINTER
 
 				pfs.bLineSpacing = 50;
 				DoPrintLine(L"", pfs);

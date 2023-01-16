@@ -103,19 +103,25 @@ wchar_t* answers::get_bar(int typ) {
 	wchar_t ret[20] = L"";
 	double qnt_chars = percent_typ[typ] / 100.0 * 20;
 	int for_loop_cap = (int)round(qnt_chars + 0.5);
-	for (int i = 0; i < for_loop_cap; i++) {
-		if (i + 1 == for_loop_cap) { // last for loop iteration
-			// append half bar if needed
-			if (round(qnt_chars) - qnt_chars > 0) {
-				// strcat(ret, "▌");
-				wcscat(ret, L"▌");
+	if ((int)qnt_chars == 20) {
+		return L"████████████████████";
+	}
+	else {
+		for (int i = 0; i < for_loop_cap; i++) {
+			if (i + 1 == for_loop_cap) { // last for loop iteration
+				// append half bar if needed
+				if (round(qnt_chars) - qnt_chars > 0) {
+					// strcat(ret, "▌");
+					wcscat(ret, L"▌");
+				}
+			}
+			else { // all loops instead of last one
+				wcscat(ret, L"█");
+				// strcat(ret, "█");
 			}
 		}
-		else { // all loops instead of last one
-			wcscat(ret, L"█");
-			// strcat(ret, "█");
-		}
 	}
+	
 	// wchar_t* real_ret = (wchar_t*)malloc(sizeof(char) * 20);;
 	// wcscpy(real_ret, ret);
 	return ret;
